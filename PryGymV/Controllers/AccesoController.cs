@@ -39,14 +39,9 @@ namespace PryAdmin.Controllers
 
                 var claims = new List<Claim> {
 
-                    new Claim(ClaimTypes.Name, usuario.Nombre),
-                    new Claim("Correo", usuario.Email),
-                };
-
-
-                claims.Add(new Claim(ClaimTypes.Role, usuario.Rol));
-
-                claims.Add(new Claim(ClaimTypes.Role, usuario.Rol));
+                    new Claim(ClaimTypes.Name, usuario.Email),
+                    new Claim(ClaimTypes.Role, usuario.Rol)
+                    };
 
                 if (usuario.Rol == "adm")
                 {
@@ -67,7 +62,7 @@ namespace PryAdmin.Controllers
 
 
 
-                    return RedirectToAction("Index", "Ejercicios");
+                    return RedirectToAction("Index", "Home");
                 }
 
 

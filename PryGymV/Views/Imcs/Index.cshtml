@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<PryGymV.Models.Imc>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "IMC";
 }
 
-<h1>Index</h1>
+<h1>Indice de Masa Corporal</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -52,7 +52,7 @@
                 @Html.DisplayFor(modelItem => item.Estado)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Usuario.UsuarioID)
+                @Html.DisplayFor(modelItem => item.Usuario.Nombre)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ImcID">Edit</a> |

@@ -28,10 +28,27 @@ namespace PryGymV.Controllers
         // GET: Imcs
         public async Task<IActionResult> Index()
         {
-            var pryGymVContext = _context.Imc.Include(i => i.Usuario);
-            return View(await pryGymVContext.ToListAsync());
-        }
+            var a = HttpContext.User.IsInRole("adm");
+            var c = HttpContext.User.Identity.Name;
 
+            if (a==true)
+            {
+                var pryGymVContext = _context.Imc.Include(i => i.Usuario);
+                return View(await pryGymVContext.ToListAsync());
+            }
+            else
+            {
+                var b = (from u in _context.Usuario
+                         join i in _context.Imc on u.UsuarioID equals i.UsuarioID
+                         where u.Email == c
+                         select i
+                         );
+
+                return View(await b.ToListAsync());
+            }
+
+            
+        }
 
         [Authorize(Roles = "cli, adm")]
 
@@ -59,8 +76,15 @@ namespace PryGymV.Controllers
         // GET: Imcs/Create
         public IActionResult Create()
         {
-            ViewData["UsuarioID"] = new SelectList(_context.Usuario, "UsuarioID", "UsuarioID");
+            var a = HttpContext.User.IsInRole("adm");
+            var c = HttpContext.User.Identity.Name;
+
+            if (a == true)
+            {
+                ViewData["UsuarioID"] = new SelectList(_context.Usuario, "UsuarioID", "Nombre");  
+            }
             return View();
+
         }
 
         // POST: Imcs/Create
@@ -69,27 +93,50 @@ namespace PryGymV.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ImcID,UsuarioID,Estatura,Peso,Fecha,Resultado,Estado")] Imc imc)
-        {
+        { 
+            var a = HttpContext.User.IsInRole("adm");
+            var c = HttpContext.User.Identity.Name;
 
-            float est = imc.Estatura;
-            float pes = imc.Peso;
-            float resul = (float)(pes / Math.Pow(est, 2));
-
-
-            imc.Resultado = resul;
-
-            imc.Estado = Estado(resul);
-
-
-
-            if (ModelState.IsValid)
+            if (a == true)
             {
+
+                float est = imc.Estatura;
+                float est1 = est / 100;
+                float pes = imc.Peso;
+                double resul = (float)(pes / Math.Pow(est1, 2));
+
+                imc.Resultado = (float)resul;
+
+                imc.Estado = Estado((float)resul);
+                if (ModelState.IsValid)
+                {
+                    _context.Add(imc);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                ViewData["UsuarioID"] = new SelectList(_context.Usuario, "UsuarioID", "UsuarioID", imc.UsuarioID);
+                return View(imc);
+            }
+            else
+            {
+                float est = imc.Estatura;
+                float pes = imc.Peso;
+                float est1 = est / 100;
+                double resul = (float)(pes / Math.Pow(est1, 2));
+
+                imc.Resultado = (float)resul;
+
+                imc.Estado = Estado((float)resul);
+
+                var b = (from u in _context.Usuario
+                         where u.Email == c
+                         select u).FirstOrDefault();
+                imc.UsuarioID = b.UsuarioID;
+
                 _context.Add(imc);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UsuarioID"] = new SelectList(_context.Usuario, "UsuarioID", "UsuarioID", imc.UsuarioID);
-            return View(imc);
         }
 
         public string Estado(float resul)

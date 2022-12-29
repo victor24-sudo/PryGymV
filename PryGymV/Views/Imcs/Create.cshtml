@@ -1,10 +1,10 @@
 ﻿@model PryGymV.Models.Imc
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Indice de Masa Corporal";
 }
 
-<h1>Create</h1>
+<h1>Crear</h1>
 
 <h4>Imc</h4>
 <hr />
@@ -12,10 +12,17 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="UsuarioID" class="control-label"></label>
-                <select asp-for="UsuarioID" class ="form-control" asp-items="ViewBag.UsuarioID"></select>
-            </div>
+
+            @{
+                var a = Context.User.IsInRole("adm");
+                @if (a == true)
+                {
+                    <div class="form-group">
+                        <label asp-for="UsuarioID" class="control-label"></label>
+                        <select asp-for="UsuarioID" class="form-control" asp-items="ViewBag.UsuarioID"></select>
+                    </div>
+                }
+            }
             <div class="form-group">
                 <label asp-for="Estatura" class="control-label"></label>
                 <input asp-for="Estatura" class="form-control" />
@@ -44,5 +51,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

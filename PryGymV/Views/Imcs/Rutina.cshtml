@@ -2,7 +2,7 @@
 
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Rutina";
 }
 
 <h1>Listado de Ejercicios</h1>
@@ -42,7 +42,7 @@
                     @Html.DisplayFor(modelItem => item.Estado)
                 </td>
 
-                @if(item.Recomendado != true)
+                @if(item.Recomendado == false)
                 {
                     <td>
                         <form asp-controller="Imcs" asp-action="Agregar" asp-route-id="@item.EjercicioID">

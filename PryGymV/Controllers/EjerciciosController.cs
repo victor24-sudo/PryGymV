@@ -14,6 +14,9 @@ namespace PryGymV.Controllers
 {
     [Authorize(Roles = "cli, adm")]
 
+
+
+
     public class EjerciciosController : Controller
     {
         private readonly PryGymVContext _context;
@@ -24,10 +27,30 @@ namespace PryGymV.Controllers
         }
 
         // GET: Ejercicios
+
+
         public async Task<IActionResult> Index()
         {
-            var pryGymVContext = _context.Ejercicio.Include(e => e.Usuario);
-            return View(await pryGymVContext.ToListAsync());
+
+            var a = HttpContext.User.IsInRole("adm");
+            var c = HttpContext.User.Identity.Name;
+
+            if (a == true)
+            {
+                var pryGymVContext = _context.Ejercicio.Include(e => e.Usuario);
+                return View(await pryGymVContext.ToListAsync());
+            }
+            else
+            {
+                var b = (from u in _context.Usuario
+                         join e in _context.Ejercicio on u.UsuarioID equals e.UsuarioID
+                         where u.Email == c
+                         select e
+                         );
+
+                return View(await b.ToListAsync());
+            }
+
         }
 
         // GET: Ejercicios/Details/5
@@ -50,12 +73,21 @@ namespace PryGymV.Controllers
         }
 
         // GET: Ejercicios/Create
+
+
+
         public IActionResult Create()
         {
+            var a = HttpContext.User.IsInRole("adm");
+            var c = HttpContext.User.Identity.Name;
 
-
-            ViewData["UsuarioID"] = new SelectList(_context.Usuario, "UsuarioID", "Nombre");
+            if (a == true)
+            {
+                ViewData["UsuarioID"] = new SelectList(_context.Usuario, "UsuarioID", "Nombre");
+            }
             return View();
+
+
         }
 
         // POST: Ejercicios/Create
@@ -65,14 +97,32 @@ namespace PryGymV.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("EjercicioID,UsuarioID,NombreEjercicio,Repeticiones")] Ejercicio ejercicio)
         {
-            if (ModelState.IsValid)
+
+            var a = HttpContext.User.IsInRole("adm");
+            var c = HttpContext.User.Identity.Name;
+            if (a == true)
+
             {
+
+                if (ModelState.IsValid)
+                {
+                    _context.Add(ejercicio);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                ViewData["UsuarioID"] = new SelectList(_context.Usuario, "UsuarioID", "UsuarioID", ejercicio.UsuarioID);
+                return View(ejercicio);
+            }else
+            {
+                var b = (from u in _context.Usuario
+                        where u.Email == c
+                        select u).FirstOrDefault();
+                ejercicio.UsuarioID = b.UsuarioID;
+
                 _context.Add(ejercicio);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UsuarioID"] = new SelectList(_context.Usuario, "UsuarioID", "UsuarioID", ejercicio.UsuarioID);
-            return View(ejercicio);
         }
 
         // GET: Ejercicios/Edit/5
@@ -161,14 +211,14 @@ namespace PryGymV.Controllers
             {
                 _context.Ejercicio.Remove(ejercicio);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool EjercicioExists(int id)
         {
-          return _context.Ejercicio.Any(e => e.EjercicioID == id);
+            return _context.Ejercicio.Any(e => e.EjercicioID == id);
         }
     }
 }
