@@ -1,0 +1,85 @@
+﻿@model List<PryGymV.Models.Cruce>
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Listado de Usuarios</h1>
+
+
+
+<form asp-controller="Imcs" asp-action="Cruce">
+    <p>
+        Buscar: <input type="text" name="buscar" class="form-text" />
+        <input type="submit" value="Buscar" class="btn btn-sm btn-dark"/>
+    </p>
+</form>
+
+
+<form asp-controller="Imcs" asp-action="Cruce">
+    <p>
+        Desde: <input type="date" name="fechaini" />
+        Hasta: <input type="date" name="fechafin"/>
+        <input type="submit" value="Buscar" class="btn btn-sm btn-dark" />   
+    </p>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Nombre
+            </th>
+            <th>
+                Apellido
+            </th>
+            <th>
+                Peso
+            </th>
+            <th>
+                Fecha
+            </th>
+            <th>
+                Resultado
+            </th>
+            <th>
+                Estado
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Apellido)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Peso)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fecha)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Resultado)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Estado)
+                </td>
+
+                <td>
+                    <form asp-controller="Imcs" asp-action="Rutina">
+                        <p>
+                            <input type="submit" value="Ver rutina" class="btn btn-sm btn-dark" />
+                        </p>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

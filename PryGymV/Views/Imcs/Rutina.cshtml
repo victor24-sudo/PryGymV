@@ -1,0 +1,55 @@
+﻿@model List<PryGymV.Models.Rutina>
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Listado de Ejercicios</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Usuario
+            </th>
+            <th>
+                Nombre del Ejercicio
+            </th>
+            <th>
+                Repeticiones
+            </th>
+            <th>
+                Estado
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NombreEjercicio)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Repeticiones)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Estado)
+                </td>
+
+                <td>
+                    @*<form asp-controller="Imcs" asp-action="Rutina">
+                        <p>
+                            <input type="submit" value="Recomendar" class="btn btn-sm btn-dark" />
+                        </p>
+                    </form>*@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
