@@ -11,5 +11,7 @@
         public string? Repeticiones { get; set; }
 
         public virtual Usuario? Usuario { get; set; }
+
+        public bool? Recomendado { get; set; }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +13,7 @@ using PryGymV.Models;
 
 namespace PryGymV.Controllers
 {
+    
     public class ImcsController : Controller
     {
         private readonly PryGymVContext _context;
@@ -20,6 +23,8 @@ namespace PryGymV.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "cli, adm")]
+
         // GET: Imcs
         public async Task<IActionResult> Index()
         {
@@ -28,7 +33,7 @@ namespace PryGymV.Controllers
         }
 
 
-
+        [Authorize(Roles = "cli, adm")]
 
         // GET: Imcs/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -48,6 +53,8 @@ namespace PryGymV.Controllers
 
             return View(imc);
         }
+
+        [Authorize(Roles = "cli, adm")]
 
         // GET: Imcs/Create
         public IActionResult Create()
@@ -109,6 +116,8 @@ namespace PryGymV.Controllers
 
         }
 
+        [Authorize(Roles = "cli, adm")]
+
         // GET: Imcs/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -126,6 +135,9 @@ namespace PryGymV.Controllers
             ViewData["UsuarioID"] = new SelectList(_context.Usuario, "UsuarioID", "UsuarioID", imc.UsuarioID);
             return View(imc);
         }
+
+
+        [Authorize(Roles = "cli, adm")]
 
         // POST: Imcs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -163,6 +175,8 @@ namespace PryGymV.Controllers
             return View(imc);
         }
 
+        [Authorize(Roles = "cli, adm")]
+
         // GET: Imcs/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -182,6 +196,7 @@ namespace PryGymV.Controllers
             return View(imc);
         }
 
+        [Authorize(Roles = "cli, adm")]
         // POST: Imcs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -201,9 +216,9 @@ namespace PryGymV.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "adm")]
 
-
-        public async Task<IActionResult> Cruce (int id, string buscar, DateTime fechaini, DateTime fechafin)
+        public async Task<IActionResult> Cruce (string buscar, DateTime fechaini, DateTime fechafin)
         {
 
             var a = (from u in _context.Usuario
@@ -211,6 +226,7 @@ namespace PryGymV.Controllers
                      where  (i.Fecha >= fechaini && i.Fecha <= fechafin) || (u.Nombre == buscar)
                      select new Cruce
                      {
+                         UsuarioID = u.UsuarioID,
                          Nombre = u.Nombre,
                          Apellido = u.Apellido,
                          Peso = i.Peso,
@@ -222,21 +238,40 @@ namespace PryGymV.Controllers
             return View(a);
         }
 
+        [Authorize(Roles = "adm")]
+
         public async Task<IActionResult> Rutina(int id)
         {
 
             var a = (from u in _context.Usuario
                      join e in _context.Ejercicio on u.UsuarioID equals e.UsuarioID
                      join i in _context.Imc on u.UsuarioID equals i.UsuarioID
+                     where e.UsuarioID == id
                      select new Rutina
                      {
                          Nombre = u.Nombre,
                          NombreEjercicio = e.NombreEjercicio,
                          Repeticiones = e.Repeticiones,
-                         Estado = i.Estado
+                         Estado = i.Estado,
+                         EjercicioID = e.EjercicioID,
+                         Recomendado = e.Recomendado
                      }).ToList();
 
             return View(a);
+        }
+
+        [Authorize(Roles = "adm")]
+
+        [HttpPost]
+        public async Task<IActionResult> Agregar(int id)
+        {
+
+            var a = _context.Ejercicio.Where(e  => e.EjercicioID == id).FirstOrDefault();
+
+            a.Recomendado = true;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Cruce");
         }
 
         private bool ImcExists(int id)

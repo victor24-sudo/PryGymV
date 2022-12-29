@@ -17,6 +17,8 @@ namespace PryGymV.Models
 
         public string? Estado { get; set; }
 
+        public int? UsuarioID {get; set; }
 
-    }
+
+}
 }

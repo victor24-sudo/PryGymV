@@ -42,13 +42,16 @@
                     @Html.DisplayFor(modelItem => item.Estado)
                 </td>
 
-                <td>
-                    @*<form asp-controller="Imcs" asp-action="Rutina">
-                        <p>
-                            <input type="submit" value="Recomendar" class="btn btn-sm btn-dark" />
-                        </p>
-                    </form>*@
-                </td>
+                @if(item.Recomendado != true)
+                {
+                    <td>
+                        <form asp-controller="Imcs" asp-action="Agregar" asp-route-id="@item.EjercicioID">
+                            <p>
+                                <input type="submit" value="Recomendar" class="btn btn-sm btn-dark" />
+                            </p>
+                        </form>
+                    </td>
+                }   
             </tr>
         }
     </tbody>

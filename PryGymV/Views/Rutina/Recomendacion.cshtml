@@ -1,0 +1,36 @@
+﻿@model List<PryGymV.Models.Rutina>
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Listado de Ejercicios</h1>
+
+
+<table class="table">
+    <thead>
+        <tr> 
+            <th>
+                Nombre del Ejercicio
+            </th>
+            <th>
+                Repeticiones
+            </th>   
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>                
+                <td>
+                    @Html.DisplayFor(modelItem => item.NombreEjercicio)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Repeticiones)
+                </td>
+  
+            </tr>
+        }
+    </tbody>
+</table>

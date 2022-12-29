@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using PryGymV.Data;
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,14 @@ builder.Services.AddDbContext<PryGymVContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(option =>
+    {
+        option.LoginPath = "/Acceso/Index";   //Formalario de Logeo
+        option.ExpireTimeSpan = TimeSpan.FromMinutes(5);  //Tiempo de espera 
+        option.AccessDeniedPath = "/Home/Privacy";  //Acceso Denegado
+    });
 
 var app = builder.Build();
 
@@ -23,10 +32,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Acceso}/{action=Index}/{id?}");
 
 app.Run();

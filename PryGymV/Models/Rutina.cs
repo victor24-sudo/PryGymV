@@ -8,5 +8,9 @@
         public string? Repeticiones { get; set; }
 
         public string? Estado { get; set; }
+
+        public int EjercicioID { get; set; }
+
+        public bool? Recomendado { get; set; }
     }
 }

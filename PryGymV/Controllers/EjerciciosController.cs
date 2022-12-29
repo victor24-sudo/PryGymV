@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +12,8 @@ using PryGymV.Models;
 
 namespace PryGymV.Controllers
 {
+    [Authorize(Roles = "cli, adm")]
+
     public class EjerciciosController : Controller
     {
         private readonly PryGymVContext _context;
@@ -48,7 +52,9 @@ namespace PryGymV.Controllers
         // GET: Ejercicios/Create
         public IActionResult Create()
         {
-            ViewData["UsuarioID"] = new SelectList(_context.Usuario, "UsuarioID", "UsuarioID");
+
+
+            ViewData["UsuarioID"] = new SelectList(_context.Usuario, "UsuarioID", "Nombre");
             return View();
         }
 

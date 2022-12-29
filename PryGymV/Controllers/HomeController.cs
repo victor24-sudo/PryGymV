@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PryGymV.Models;
+using System.Data;
 using System.Diagnostics;
 
 namespace PryGymV.Controllers
 {
+    [Authorize(Roles = "cli, adm")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
