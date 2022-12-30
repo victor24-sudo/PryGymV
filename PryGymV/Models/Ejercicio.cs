@@ -13,5 +13,7 @@
         public virtual Usuario? Usuario { get; set; }
 
         public bool? Recomendado { get; set; }
+
+        public int? Numero { get; set; }
     }
 }

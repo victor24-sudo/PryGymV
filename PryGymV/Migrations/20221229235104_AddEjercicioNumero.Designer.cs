@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PryGymV.Data;
 
@@ -11,9 +12,10 @@ using PryGymV.Data;
 namespace PryGymV.Migrations
 {
     [DbContext(typeof(PryGymVContext))]
-    partial class PryGymVContextModelSnapshot : ModelSnapshot
+    [Migration("20221229235104_AddEjercicioNumero")]
+    partial class AddEjercicioNumero
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

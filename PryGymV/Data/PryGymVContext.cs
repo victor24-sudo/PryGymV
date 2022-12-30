@@ -30,5 +30,10 @@ namespace PryGymV.Data
         {
             return Usuario.Where(s => s.Rol == _rol).FirstOrDefault();
         }
+
+        public Ejercicio ValidarEjercicio(string _nombreEjercicio)
+        {
+            return Ejercicio.Where(s => s.NombreEjercicio == _nombreEjercicio).FirstOrDefault();
+        }
     }
 }

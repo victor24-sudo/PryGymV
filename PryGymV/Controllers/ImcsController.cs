@@ -321,6 +321,63 @@ namespace PryGymV.Controllers
             return RedirectToAction("Cruce");
         }
 
+        public async Task<IActionResult> Ranking(int id,string buscar, DateTime fechaini, DateTime fechafin)
+        {
+
+            var a = (from u in _context.Usuario
+                     join i in _context.Imc on u.UsuarioID equals i.UsuarioID
+                     join e in _context.Ejercicio on u.UsuarioID equals e.UsuarioID
+                     where (i.Fecha >= fechaini && i.Fecha <= fechafin) || (e.NombreEjercicio == buscar)
+                     select new Ranking
+                     {
+                         UsuarioID = u.UsuarioID,
+                         Nombre = u.Nombre,
+                         Apellido = u.Apellido,
+                         Peso = i.Peso,
+                         Fecha = i.Fecha,
+                         Resultado = i.Resultado,
+                         Estado = i.Estado,
+                         Numero = e.Numero,
+                         NombreEjercicio = e.NombreEjercicio
+
+                     }).OrderBy(u => u.Resultado).ToList();
+
+            return View(a);
+        }
+
+        public async Task<IActionResult> Valor(string buscar, int id)
+        {
+
+            var a = _context.Ejercicio.Where(e => e.NombreEjercicio == buscar).FirstOrDefault();
+
+            a.Numero = a.Numero + 1;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Ranking");
+
+        }
+
+        public async Task<IActionResult> Numero(string buscar, int id)
+        {
+
+            var b = (from u in _context.Usuario
+                     join e in _context.Ejercicio on u.UsuarioID equals e.UsuarioID
+                     where e.UsuarioID == id
+                     select new Numero
+                     { 
+                         NombreEjercicio = e.NombreEjercicio,
+                         Valor = 2
+                         
+                     }).ToList();
+
+            return View(b);
+
+            
+        }
+
+
+
+
         private bool ImcExists(int id)
         {
             return _context.Imc.Any(e => e.ImcID == id);
